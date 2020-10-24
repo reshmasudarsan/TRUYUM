@@ -54,8 +54,8 @@ public class MenuItem {
         this.active = active;
     }
 
-    public Date getDateOfLaunch() {
-        return dateOfLaunch;
+    public java.sql.Date getDateOfLaunch() {
+        return (java.sql.Date) dateOfLaunch;
     }
 
     public void setDateOfLaunch(Date dateOfLaunch) {
@@ -97,5 +97,8 @@ public class MenuItem {
             return false;
         return true;
     }
+
+	public static void add(MenuItem menuItem) {
+	}
 
 }

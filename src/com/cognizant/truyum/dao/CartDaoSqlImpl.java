@@ -5,7 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import javax.swing.plaf.MenuItemUI;
 
 import com.cognizant.truyum.model.Cart;
 import com.cognizant.truyum.model.MenuItem;
@@ -36,20 +39,21 @@ public class CartDaoSqlImpl implements CartDao {
         try {
             Connection con = ConnectionHandler.getConnection();
             Cart c = new Cart(new ArrayList<MenuItem>(), 0);
-            PreparedStatement stmt = con.prepareStatement("select * from menu_item WHERE id IN (select ct_menu_id from cart where ct_user_id = ?)");
-            stmt.setLong(1, userid)
-            ResultSet rs=stmt.executeQuery();
-            while(rs.next()){
+            PreparedStatement stmt = con.prepareStatement(
+                    "select * from menu_item WHERE id IN (select ct_menu_id from cart where ct_user_id = ?)");
+            stmt.setLong(1, userid);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
                 long id = rs.getLong(1);
                 String name = rs.getString(2);
                 float price = rs.getFloat(3);
                 totalprice += price;
-                boolean active = rs.getInt(4)==1;
+                boolean active = rs.getInt(4) == 1;
                 Date dateOfLaunch = rs.getDate(5);
                 String category = rs.getString(6);
-                boolean freeDelivery = rs.getInt(7)==1;
+                boolean freeDelivery = rs.getInt(7) == 1;
                 MenuItem menuItem = new MenuItem(id, name, price, active, dateOfLaunch, category, freeDelivery);
-                menuItemList.add(menuItem);
+                MenuItem.add(menuItem);
             }
         } catch (ClassNotFoundException e) {
            
