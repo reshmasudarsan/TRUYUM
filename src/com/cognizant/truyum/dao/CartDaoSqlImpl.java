@@ -16,8 +16,10 @@ public class CartDaoSqlImpl implements CartDao {
     public void addCartItem(long userid, long menuItemId) {
         try {
             Connection con = ConnectionHandler.getConnection();
-            PreparedStatement stmt = con.prepareStatement("insert into cart ");
-            // TODO to be competed
+            PreparedStatement stmt = con.prepareStatement("insert into cart(ct_user_id, ct_menu_id) values (?, ?)");
+            stmt.setLong(1, userid);
+            stmt.setLong(2, menuItemId);
+
             stmt.executeUpdate();
         } catch (ClassNotFoundException e) {
 
@@ -30,14 +32,24 @@ public class CartDaoSqlImpl implements CartDao {
 
     @Override
     public List<MenuItem> getAllCartItems(long userid) throws CartEmptyException {
+        double totalprice = 0;
         try {
             Connection con = ConnectionHandler.getConnection();
             Cart c = new Cart(new ArrayList<MenuItem>(), 0);
-            PreparedStatement stmt = con.prepareStatement("select  ");
-            //TODO to be complete
+            PreparedStatement stmt = con.prepareStatement("select * from menu_item WHERE id IN (select ct_menu_id from cart where ct_user_id = ?)");
+            stmt.setLong(1, userid)
             ResultSet rs=stmt.executeQuery();
             while(rs.next()){
-                //TODO ////
+                long id = rs.getLong(1);
+                String name = rs.getString(2);
+                float price = rs.getFloat(3);
+                totalprice += price;
+                boolean active = rs.getInt(4)==1;
+                Date dateOfLaunch = rs.getDate(5);
+                String category = rs.getString(6);
+                boolean freeDelivery = rs.getInt(7)==1;
+                MenuItem menuItem = new MenuItem(id, name, price, active, dateOfLaunch, category, freeDelivery);
+                menuItemList.add(menuItem);
             }
         } catch (ClassNotFoundException e) {
            
@@ -53,8 +65,11 @@ public class CartDaoSqlImpl implements CartDao {
     public void removeCartItem(long userId, long menuitemid) {
         try {
             Connection con = ConnectionHandler.getConnection();
-            PreparedStatement stmt = con.prepareStatement("delete from cart where ");
-            // TODO to be completed
+            PreparedStatement stmt = con.prepareStatement("delete from cart where ct_menu_id = ? AND ct_user_id = ?");
+               stmt.setLong(1, menuitemid);
+               stmt.setLong(2, userId);
+
+
             stmt.executeUpdate();
         } catch (ClassNotFoundException e) {
 

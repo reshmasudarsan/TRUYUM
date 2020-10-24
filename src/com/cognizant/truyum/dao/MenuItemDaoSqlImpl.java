@@ -27,10 +27,10 @@ public class MenuItemDaoSqlImpl implements MenuItemDao {
                         rst.getString(6), rst.getBoolean(7)));
             }
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
+        
             e.printStackTrace();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
+            
             e.printStackTrace();
         }
         return m;
@@ -42,8 +42,8 @@ public class MenuItemDaoSqlImpl implements MenuItemDao {
         try {
             Connection con = ConnectionHandler.getConnection();
             PreparedStatement stmt = con
-                    .prepareStatement("select * from menu_item where is_active=? and date_of_launch>=?");
-            stmt.setString(1, "active");
+                    .prepareStatement("select * from menu_item where active=? and date_of_launch>=?");
+            stmt.setString(1, "true");
             Date dateobj = new Date(0);
             stmt.setDate(2, dateobj);
             ResultSet rst = stmt.executeQuery();
@@ -53,10 +53,9 @@ public class MenuItemDaoSqlImpl implements MenuItemDao {
                         rst.getString(6), rst.getBoolean(7)));
             }
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
+        
             e.printStackTrace();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return m;
@@ -67,15 +66,20 @@ public class MenuItemDaoSqlImpl implements MenuItemDao {
         try {
             Connection con = ConnectionHandler.getConnection();
             PreparedStatement stmt = con
-                    .prepareStatement("update menu_item where item_id=? set item_name=?,set ");
+                    .prepareStatement("update menu_item where id=? set item_name=?,set price=?,set active=?,set date_of_launch=?,set category=?,set free_delivery=?");
             stmt.setLong(1, menuItem.getId());
-            /////
+            stmt.setString(2, menuItem.getName());
+            stmt.setFloat(3, menuItem.getPrice());
+            stmt.setBoolean(4, menuItem.isActive());
+            stmt.setDate(5, menuItem.getDateOfLaunch());
+            stmt.setString(6, menuItem.getCategory());
+            stmt.setBoolean(7, menuItem.isFreeDelivery());
             stmt.executeUpdate();
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
+            
             e.printStackTrace();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
+            
             e.printStackTrace();
         }
     }
@@ -85,7 +89,7 @@ public class MenuItemDaoSqlImpl implements MenuItemDao {
         try {
             Connection con = ConnectionHandler.getConnection();
             PreparedStatement stmt = con
-                    .prepareStatement("select * from menu_item where item_id=?");
+                    .prepareStatement("select * from menu_item where id=?");
             stmt.setLong(1, menuitemId);
             ResultSet rst = stmt.executeQuery();
 
@@ -93,10 +97,10 @@ public class MenuItemDaoSqlImpl implements MenuItemDao {
                 return new MenuItem(rst.getLong(1), rst.getString(2), rst.getFloat(3), rst.getBoolean(4), rst.getDate(5),rst.getString(6), rst.getBoolean(7));
             }
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
+            
             e.printStackTrace();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
+            
             e.printStackTrace();
         }
         return null;
